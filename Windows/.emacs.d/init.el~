@@ -1,0 +1,86 @@
+(setq os-packages-path "C:\\gabri\\.emacs.d\\emacs_packages")
+(setq vc-follow-symlinks t)
+(prefer-coding-system 'utf-8-unix)
+
+(add-to-list 'load-path
+	  (concat os-packages-path "use-package/"))
+
+;; per spacemacs theme
+(add-to-list 'load-path "C:\\gabri\\.emacs.d\\emacs_themes\\spacemacs-theme-20230530.1751")
+
+(package-initialize)
+(require 'use-package)
+
+(use-package package
+  :config
+  (setq package-archive-priorities
+	'(("melpa-stable" .2)
+	  ("MELPA" .1)
+	  ("gnu" .0)))
+  (setq package-archives
+	'(("melpa-stable" . "https://stable.melpa.org/packages/")
+	  ("MELPA" . "https://melpa.org/packages/")
+	  ("gnu" . "http://elpa.gnu.org/packages/")
+	  ("gnu-devel" . "https://elpa.gnu.org/devel/")))
+  )
+
+(add-to-list 'custom-theme-load-path  "C:\\gabri\\.emacs.d\\emacs_themes\\spacemacs-theme-20230530.1751")
+(load-theme 'spacemacs-dark t)
+
+(use-package org-bullets
+  :ensure t
+  :hook
+  (org-mode . org-bullets-mode)
+
+  :config
+  (setq org-bullets-face-name (quote org-bullets-face))
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+  (setq org-bullets-bullet-list '("✙" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
+ )
+
+(use-package company
+:ensure t
+:defer t
+:config
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-lenght 3)
+(setq company-selection-wrap-around t)
+(company-tng-configure-default)
+(setq company-quickhelp-color-background "#4F4F4F")
+(setq company-quickhelp-colo-foreground "#DCDCCC")
+
+(global-company-mode 1))
+
+(use-package ivy
+ :ensure t
+ :config
+ (ivy-mode 1)
+ (setq ivy-re-builders-alist
+	 '((swiper . ivy--regex-plus)
+	   (t      . ivy--regex-fuzzy)))
+)
+
+(use-package swiper
+   :ensure t
+   :config
+   (global-set-key "\C-s" 'swiper)
+ )
+
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1))
+
+(use-package all-the-icons
+  :ensure t)
+
+(defun my/tangle-dotfiles()
+   (interactive)
+  (when (equal (buffer-file-name)
+	       (expand-file-name "C:\\gabri\\.emacs.d\\dotemacs.org"))
+    (org-babel-tangle)
+    (message "Dotfile tangle")	       
+  ))
+
+(add-hook 'after-save-hook #'my/tangle-dotfiles)
